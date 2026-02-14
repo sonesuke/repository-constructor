@@ -1,0 +1,10 @@
+# Terraform
+.terraform/
+*.tfstate.backup
+.terraform.lock.hcl
+
+# Note: We EXPLICITLY ALLOW *.tfstate and terraform.tfstate.d/ to be managed by Git as per requirement.
+# However, sensitive data should not be in state if possible, but user asked for Git managed state.
+
+# Dev container secrets
+.devcontainer/.env

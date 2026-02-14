@@ -1,0 +1,25 @@
+{
+    "name": "Terraform GitHub Constructor",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "initializeCommand": ".devcontainer/initialize.sh",
+    "runArgs": [
+        "--env-file",
+        ".devcontainer/.env"
+    ],
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            "installZsh": true,
+            "configureZshAsDefaultShell": true
+        },
+        "ghcr.io/devcontainers/features/github-cli:1": {},
+        "ghcr.io/devcontainers/features/python:1": {},
+        "ghcr.io/devcontainers/features/node:1": {}
+    },
+    "remoteUser": "vscode",
+    "postCreateCommand": ".devcontainer/post-create.sh",
+    "mounts": [
+        "source=${localEnv:HOME}/.config/gh,target=/home/vscode/.config/gh,type=bind,readonly=true"
+    ]
+}
