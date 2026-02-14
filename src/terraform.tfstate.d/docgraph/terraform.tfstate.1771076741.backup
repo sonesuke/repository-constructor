@@ -1,0 +1,317 @@
+{
+  "version": 4,
+  "terraform_version": "1.14.5",
+  "serial": 9,
+  "lineage": "c995a2be-9617-ad9d-21c8-31dc2ee2dbed",
+  "outputs": {
+    "repository_ssh_clone_url": {
+      "value": "git@github.com:sonesuke/docgraph.git",
+      "type": "string"
+    },
+    "repository_url": {
+      "value": "https://github.com/sonesuke/docgraph",
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "mode": "managed",
+      "type": "github_repository",
+      "name": "repo",
+      "provider": "provider[\"registry.terraform.io/integrations/github\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "allow_auto_merge": false,
+            "allow_forking": true,
+            "allow_merge_commit": true,
+            "allow_rebase_merge": true,
+            "allow_squash_merge": true,
+            "allow_update_branch": false,
+            "archive_on_destroy": null,
+            "archived": false,
+            "auto_init": false,
+            "default_branch": "main",
+            "delete_branch_on_merge": true,
+            "description": "A powerful lint tool and graph generator designed to build and verify directed graphs embedded in standard Markdown files. docgraph ensures your documentation is consistent, traceable, and AI-ready.",
+            "etag": "W/\"6eae46452e8ba053d49728d4e7ed52475a34461a9b0b4dc0e3cea122bfa67d1e\"",
+            "fork": "false",
+            "full_name": "sonesuke/docgraph",
+            "git_clone_url": "git://github.com/sonesuke/docgraph.git",
+            "gitignore_template": null,
+            "has_discussions": false,
+            "has_downloads": false,
+            "has_issues": true,
+            "has_projects": true,
+            "has_wiki": true,
+            "homepage_url": "https://github.com/sonesuke/docgraph",
+            "html_url": "https://github.com/sonesuke/docgraph",
+            "http_clone_url": "https://github.com/sonesuke/docgraph.git",
+            "id": "docgraph",
+            "ignore_vulnerability_alerts_during_read": false,
+            "is_template": false,
+            "license_template": null,
+            "merge_commit_message": "PR_TITLE",
+            "merge_commit_title": "MERGE_MESSAGE",
+            "name": "docgraph",
+            "node_id": "R_kgDOQzWvMA",
+            "pages": [
+              {
+                "build_type": "legacy",
+                "cname": "",
+                "custom_404": false,
+                "html_url": "https://sonesuke.github.io/docgraph/",
+                "source": [
+                  {
+                    "branch": "main",
+                    "path": "/"
+                  }
+                ],
+                "status": "building",
+                "url": "https://api.github.com/repos/sonesuke/docgraph/pages"
+              }
+            ],
+            "primary_language": "Rust",
+            "private": false,
+            "repo_id": 1127591728,
+            "security_and_analysis": [
+              {
+                "advanced_security": [],
+                "code_security": [],
+                "secret_scanning": [
+                  {
+                    "status": "enabled"
+                  }
+                ],
+                "secret_scanning_ai_detection": [],
+                "secret_scanning_non_provider_patterns": [],
+                "secret_scanning_push_protection": [
+                  {
+                    "status": "enabled"
+                  }
+                ]
+              }
+            ],
+            "source_owner": "",
+            "source_repo": "",
+            "squash_merge_commit_message": "COMMIT_MESSAGES",
+            "squash_merge_commit_title": "COMMIT_OR_PR_TITLE",
+            "ssh_clone_url": "git@github.com:sonesuke/docgraph.git",
+            "svn_url": "https://github.com/sonesuke/docgraph",
+            "template": [],
+            "topics": [
+              "claude-code",
+              "graph",
+              "markdown",
+              "rust",
+              "specdrivendevelopment",
+              "typescript",
+              "vscode-extension"
+            ],
+            "visibility": "public",
+            "vulnerability_alerts": true,
+            "web_commit_signoff_required": false
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "github_repository_dependabot_security_updates",
+      "name": "repo",
+      "provider": "provider[\"registry.terraform.io/integrations/github\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "enabled": true,
+            "id": "docgraph",
+            "repository": "docgraph"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "github_repository.repo"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "github_repository_file",
+      "name": "ci",
+      "provider": "provider[\"registry.terraform.io/integrations/github\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "autocreate_branch": null,
+            "autocreate_branch_source_branch": null,
+            "autocreate_branch_source_sha": null,
+            "branch": "main",
+            "commit_author": null,
+            "commit_email": null,
+            "commit_message": "ci: remove prettier formatting check from root to fix PR",
+            "commit_sha": "7aa33a0f3255dc4061bd785a4492143559cf221b",
+            "content": "name: CI\n\non:\n  push:\n    branches: ['main']\n  pull_request:\n    branches: ['main']\n  workflow_dispatch:\n\nenv:\n  CARGO_TERM_COLOR: always\n\npermissions:\n  contents: read\n  packages: read\n\njobs:\n  verify:\n    name: Build \u0026 Verify\n    runs-on: ubuntu-latest\n    steps:\n      - name: Set git default branch\n        run: |\n          git config --global init.defaultBranch main\n          git config --global advice.detachedHead false\n\n      - uses: actions/checkout@v6\n\n      - name: Log in to GitHub Container Registry\n        uses: docker/login-action@v3\n        with:\n          registry: ghcr.io\n          username: ${{ github.actor }}\n          password: ${{ secrets.GITHUB_TOKEN }}\n\n      - name: Build Dev Container\n        uses: devcontainers/ci@v0.3\n        env:\n          CI: true\n          CARGO_HOME: ${{ github.workspace }}/.cargo\n          CARGO_TARGET_DIR: ${{ github.workspace }}/target\n          CARGO_INCREMENTAL: 1\n        with:\n          imageName: ghcr.io/${{ github.repository }}/docgraph-dev\n          cacheFrom: ghcr.io/${{ github.repository }}/docgraph-dev\n          push: never\n          env: |\n            CI=true\n            GITHUB_ACTIONS=true\n          runCmd: 'true'\n\n      - name: Cargo Build\n        uses: devcontainers/ci@v0.3\n        env:\n          CI: true\n          CARGO_HOME: ${{ github.workspace }}/.cargo\n          CARGO_TARGET_DIR: ${{ github.workspace }}/target\n          CARGO_INCREMENTAL: 1\n        with:\n          imageName: ghcr.io/${{ github.repository }}/docgraph-dev\n          cacheFrom: ghcr.io/${{ github.repository }}/docgraph-dev\n          push: never\n          runCmd: cargo build\n\n      - name: Docgraph Check\n        uses: devcontainers/ci@v0.3\n        env:\n          CI: true\n          CARGO_HOME: ${{ github.workspace }}/.cargo\n          CARGO_TARGET_DIR: ${{ github.workspace }}/target\n          CARGO_INCREMENTAL: 1\n        with:\n          imageName: ghcr.io/${{ github.repository }}/docgraph-dev\n          cacheFrom: ghcr.io/${{ github.repository }}/docgraph-dev\n          push: never\n          runCmd: cargo run -- check .\n\n      - name: Rust Format Check\n        uses: devcontainers/ci@v0.3\n        env:\n          CI: true\n          CARGO_HOME: ${{ github.workspace }}/.cargo\n          CARGO_TARGET_DIR: ${{ github.workspace }}/target\n          CARGO_INCREMENTAL: 1\n        with:\n          imageName: ghcr.io/${{ github.repository }}/docgraph-dev\n          cacheFrom: ghcr.io/${{ github.repository }}/docgraph-dev\n          push: never\n          runCmd: cargo fmt -- --check\n\n      - name: Cargo Clippy\n        uses: devcontainers/ci@v0.3\n        env:\n          CI: true\n          CARGO_HOME: ${{ github.workspace }}/.cargo\n          CARGO_TARGET_DIR: ${{ github.workspace }}/target\n          CARGO_INCREMENTAL: 1\n        with:\n          imageName: ghcr.io/${{ github.repository }}/docgraph-dev\n          cacheFrom: ghcr.io/${{ github.repository }}/docgraph-dev\n          push: never\n          runCmd: cargo clippy -- -D warnings\n\n      - name: Security Audit (Rust)\n        uses: devcontainers/ci@v0.3\n        env:\n          CI: true\n          CARGO_HOME: ${{ github.workspace }}/.cargo\n          CARGO_TARGET_DIR: ${{ github.workspace }}/target\n          CARGO_INCREMENTAL: 1\n        with:\n          imageName: ghcr.io/${{ github.repository }}/docgraph-dev\n          cacheFrom: ghcr.io/${{ github.repository }}/docgraph-dev\n          push: never\n          runCmd: |\n            cargo audit\n            (cd zed-extension \u0026\u0026 cargo audit)\n\n      - name: VSIX Lint \u0026 Audit\n        uses: devcontainers/ci@v0.3\n        env:\n          CI: true\n          CARGO_HOME: ${{ github.workspace }}/.cargo\n          CARGO_TARGET_DIR: ${{ github.workspace }}/target\n          CARGO_INCREMENTAL: 1\n        with:\n          imageName: ghcr.io/${{ github.repository }}/docgraph-dev\n          cacheFrom: ghcr.io/${{ github.repository }}/docgraph-dev\n          push: never\n          runCmd: |\n            npm install --prefix vsix\n            npm run lint --prefix vsix\n            npm audit --prefix vsix\n\n      - name: Tests \u0026 Coverage\n        uses: devcontainers/ci@v0.3\n        env:\n          CI: true\n          CARGO_HOME: ${{ github.workspace }}/.cargo\n          CARGO_TARGET_DIR: ${{ github.workspace }}/target\n          CARGO_INCREMENTAL: 1\n        with:\n          imageName: ghcr.io/${{ github.repository }}/docgraph-dev\n          cacheFrom: ghcr.io/${{ github.repository }}/docgraph-dev\n          push: never\n          runCmd: cargo llvm-cov --all-features --workspace --lcov --output-path lcov.info\n\n      - name: Upload coverage report\n        uses: actions/upload-artifact@v6\n        with:\n          name: coverage-report\n          path: lcov.info\n",
+            "file": ".github/workflows/ci.yml",
+            "id": "docgraph:.github/workflows/ci.yml:main",
+            "overwrite_on_create": true,
+            "ref": "main",
+            "repository": "docgraph",
+            "repository_id": 1127591728,
+            "sha": "36fe6d9450b61ca027c856bca97cc3181fa9b86e"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "dependencies": [
+            "github_repository.repo"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "github_repository_file",
+      "name": "codeql",
+      "provider": "provider[\"registry.terraform.io/integrations/github\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "autocreate_branch": null,
+            "autocreate_branch_source_branch": null,
+            "autocreate_branch_source_sha": null,
+            "branch": "main",
+            "commit_author": null,
+            "commit_email": null,
+            "commit_message": "feat: introduce prek for pre-commit hooks and cleanup project root回,Cwd:",
+            "commit_sha": "80649ecf042023f61aab84dcc1d28157a84e3886",
+            "content": "name: 'CodeQL'\n\non:\n  push:\n    branches: ['main']\n  pull_request:\n    branches: ['main']\n  schedule:\n    - cron: '0 6 * * 1'\n\njobs:\n  analyze:\n    name: Analyze (${{ matrix.language }})\n    runs-on: ubuntu-latest\n    permissions:\n      security-events: write\n      packages: read\n      actions: read\n      contents: read\n\n    strategy:\n      fail-fast: false\n      matrix:\n        include:\n          - language: javascript-typescript\n            build-mode: none\n          - language: rust\n            build-mode: none\n\n    steps:\n      - name: Set git default branch\n        run: |\n          git config --global init.defaultBranch main\n          git config --global advice.detachedHead false\n\n      - name: Checkout repository\n        uses: actions/checkout@v6\n\n      - name: Initialize CodeQL\n        uses: github/codeql-action/init@v4\n        with:\n          languages: ${{ matrix.language }}\n          build-mode: ${{ matrix.build-mode }}\n\n      - name: Perform CodeQL Analysis\n        uses: github/codeql-action/analyze@v4\n        with:\n          category: '/language:${{matrix.language}}'\n",
+            "file": ".github/workflows/codeql.yml",
+            "id": "docgraph:.github/workflows/codeql.yml:main",
+            "overwrite_on_create": true,
+            "ref": "main",
+            "repository": "docgraph",
+            "repository_id": 1127591728,
+            "sha": "533144af45e143f92d37bc1a2301a744b788b903"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "dependencies": [
+            "github_repository.repo"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "github_repository_ruleset",
+      "name": "main",
+      "provider": "provider[\"registry.terraform.io/integrations/github\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "bypass_actors": [],
+            "conditions": [
+              {
+                "ref_name": [
+                  {
+                    "exclude": [],
+                    "include": [
+                      "refs/heads/main"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "enforcement": "active",
+            "etag": "\"e791655ffb688a02a3f75a9bb1a7e1980b9a92f1066904da46e17a01a4c165da\"",
+            "id": "12816179",
+            "name": "main-protection",
+            "node_id": "RRS_lACqUmVwb3NpdG9yec5DNa8wzgDDjzM",
+            "repository": "docgraph",
+            "rules": [
+              {
+                "branch_name_pattern": [],
+                "commit_author_email_pattern": [],
+                "commit_message_pattern": [],
+                "committer_email_pattern": [],
+                "copilot_code_review": [],
+                "creation": false,
+                "deletion": true,
+                "file_extension_restriction": [],
+                "file_path_restriction": [],
+                "max_file_path_length": [],
+                "max_file_size": [],
+                "merge_queue": [],
+                "non_fast_forward": true,
+                "pull_request": [
+                  {
+                    "allowed_merge_methods": [
+                      "merge",
+                      "squash",
+                      "rebase"
+                    ],
+                    "dismiss_stale_reviews_on_push": false,
+                    "require_code_owner_review": false,
+                    "require_last_push_approval": false,
+                    "required_approving_review_count": 0,
+                    "required_review_thread_resolution": false,
+                    "required_reviewers": []
+                  }
+                ],
+                "required_code_scanning": [
+                  {
+                    "required_code_scanning_tool": [
+                      {
+                        "alerts_threshold": "errors_and_warnings",
+                        "security_alerts_threshold": "high_or_higher",
+                        "tool": "CodeQL"
+                      }
+                    ]
+                  }
+                ],
+                "required_deployments": [],
+                "required_linear_history": true,
+                "required_signatures": false,
+                "required_status_checks": [
+                  {
+                    "do_not_enforce_on_create": false,
+                    "required_check": [
+                      {
+                        "context": "Analyze (actions)",
+                        "integration_id": 0
+                      }
+                    ],
+                    "strict_required_status_checks_policy": true
+                  }
+                ],
+                "tag_name_pattern": [],
+                "update": false,
+                "update_allows_fetch_and_merge": false
+              }
+            ],
+            "ruleset_id": 12816179,
+            "target": "branch"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "dependencies": [
+            "github_repository.repo"
+          ]
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}

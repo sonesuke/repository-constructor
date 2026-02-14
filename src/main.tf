@@ -4,6 +4,12 @@ variable "description" {
   default     = "Repository managed by terraform"
 }
 
+variable "manage_files" {
+  type        = bool
+  description = "Whether to manage repository files via Terraform"
+  default     = true
+}
+
 resource "github_repository" "repo" {
   name        = terraform.workspace
   description = var.description
@@ -18,6 +24,24 @@ resource "github_repository" "repo" {
   delete_branch_on_merge = true
 
   vulnerability_alerts = true
+
+  lifecycle {
+    ignore_changes = [
+      description,
+      homepage_url,
+      topics,
+      has_issues,
+      has_projects,
+      has_wiki,
+      auto_init,
+    ]
+  }
+
+  pages {
+    source {
+      branch = "main"
+    }
+  }
 
   security_and_analysis {
     secret_scanning {
@@ -83,6 +107,8 @@ resource "github_repository_dependabot_security_updates" "repo" {
 
 # Example of initial file: .github/workflows/ci.yml
 resource "github_repository_file" "ci" {
+  count = var.manage_files ? 1 : 0
+
   repository          = github_repository.repo.name
   branch              = "main"
   file                = ".github/workflows/ci.yml"
@@ -100,10 +126,19 @@ EOF
   commit_message      = "chore: add default CI workflow"
   overwrite_on_create = true
 
+  lifecycle {
+    ignore_changes = [
+      content,
+      commit_message,
+    ]
+  }
+
   depends_on = [github_repository.repo]
 }
 # Example of initial file: .github/workflows/codeql.yml
 resource "github_repository_file" "codeql" {
+  count = var.manage_files ? 1 : 0
+
   repository          = github_repository.repo.name
   branch              = "main"
   file                = ".github/workflows/codeql.yml"
@@ -151,6 +186,13 @@ jobs:
 EOF
   commit_message      = "chore: add CodeQL analysis workflow"
   overwrite_on_create = true
+
+  lifecycle {
+    ignore_changes = [
+      content,
+      commit_message,
+    ]
+  }
 
   depends_on = [github_repository.repo]
 }
