@@ -4,12 +4,11 @@ A Terraform-based tool for managing GitHub repositories using Dev Container.
 
 ## Features
 
-- **Dev Container Powered**: Environment managed by `devcontainer` CLI with `tenv` (Terraform version manager), `tflint`, `checkov`, and `commitlint`.
+- **Dev Container Powered**: Environment managed by `devcontainer` CLI with `tenv` (Terraform version manager), `tflint`, and `checkov`.
 - **Workspace-based Management**: Each workspace in Terraform corresponds to a GitHub repository name.
 - **Branch Protection**: Automatically protects the `main` branch (disallows force pushes and deletions).
 - **Security Features**: Enables Dependabot alerts, Dependabot security updates, CodeQL analysis (Code Scanning), Secret Scanning, and Secret Scanning Push Protection.
 - **Git-managed State**: Terraform state files are tracked by Git for simplicity (intended for personal use).
-- **Conventional Commits**: Enforced via `commitlint`.
 
 ## Prerequisites
 
@@ -55,7 +54,6 @@ A Terraform-based tool for managing GitHub repositories using Dev Container.
 - **Formatting**: `terraform fmt` (run inside `src/` to format HCL files)
 - **TFLint**: `tflint`
 - **Checkov**: `checkov -d .`
-- **Commitlint**: `commitlint --from HEAD~1` (checks the latest commit)
 
 ## Important Notes
 
