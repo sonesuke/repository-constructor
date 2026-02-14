@@ -62,11 +62,22 @@ A Terraform-based tool for managing GitHub repositories using Dev Container.
 - **State Management**: State files are NOT ignored by `.gitignore`. This repository tracks them in Git.
 - **Locking**: No state locking is implemented as this is intended for single-user scenarios.
 
-## Configuration Variables
+## Configuration (Map Strategy)
 
-### `manage_files` (bool)
-- **Description**: Whether to manage repository files (`.github/workflows/ci.yml`, `codeql.yml`, etc.) via Terraform.
-- **Default**: `true`
-- **Use Case**:
-    - `true`: When creating a **new repository** from scratch. Terraform will deploy standard CI/CodeQL files.
-    - `false`: When importing an **existing repository** (like `sonesuke/docgraph`) that already has its own CI workflows. This prevents Terraform from overwriting or conflicting with existing files.
+This project uses a **Map Strategy** in `src/main.tf` to manage per-workspace configurations. Instead of using external `.tfvars` files, settings are defined in the `locals` block.
+
+### How to Configure
+Modify `src/main.tf` to add your repository-specific settings:
+
+```hcl
+locals {
+  workspace_config = {
+    # Add your repository here
+    docgraph = { manage_files = false }
+  }
+}
+```
+
+- **`manage_files` (bool)**:
+    - `true` (Default): For **new repositories**. Terraform manages CI/CodeQL files.
+    - `false`: For **existing repositories** (like `docgraph`). Terraform imports the repository but leaves files untouched to avoid conflicts with Rulesets.

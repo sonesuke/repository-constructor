@@ -4,10 +4,17 @@ variable "description" {
   default     = "Repository managed by terraform"
 }
 
-variable "manage_files" {
-  type        = bool
-  description = "Whether to manage repository files via Terraform"
-  default     = true
+locals {
+  # Configuration map per workspace
+  workspace_config = {
+    docgraph = { manage_files = false }
+  }
+
+  # Default configuration
+  default_config = { manage_files = true }
+
+  # Merge default config with workspace specific config
+  config = merge(local.default_config, lookup(local.workspace_config, terraform.workspace, {}))
 }
 
 resource "github_repository" "repo" {
@@ -107,7 +114,7 @@ resource "github_repository_dependabot_security_updates" "repo" {
 
 # Example of initial file: .github/workflows/ci.yml
 resource "github_repository_file" "ci" {
-  count = var.manage_files ? 1 : 0
+  count = local.config.manage_files ? 1 : 0
 
   repository          = github_repository.repo.name
   branch              = "main"
@@ -137,7 +144,7 @@ EOF
 }
 # Example of initial file: .github/workflows/codeql.yml
 resource "github_repository_file" "codeql" {
-  count = var.manage_files ? 1 : 0
+  count = local.config.manage_files ? 1 : 0
 
   repository          = github_repository.repo.name
   branch              = "main"
