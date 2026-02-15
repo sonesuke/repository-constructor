@@ -18,7 +18,7 @@ locals {
   default_config = {
     manage_files          = true
     codeql_languages      = ["actions"]
-    ci_checks             = ["verify"]
+    ci_checks             = ["Build & Verify"]
     dependabot_ecosystems = ["github-actions"]
   }
 
@@ -147,6 +147,7 @@ name: CI
 on: [push, pull_request]
 jobs:
   verify:
+    name: Build & Verify
     runs-on: ubuntu-latest
     permissions:
       contents: read
