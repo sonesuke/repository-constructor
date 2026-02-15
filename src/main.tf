@@ -243,6 +243,11 @@ resource "github_repository_file" "dependabot" {
         schedule = {
           interval = "weekly"
         }
+        groups = {
+          all-dependencies = {
+            patterns = ["*"]
+          }
+        }
       }
     ]
   })
