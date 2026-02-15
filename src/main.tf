@@ -7,11 +7,20 @@ variable "description" {
 locals {
   # Configuration map per workspace
   workspace_config = {
-    docgraph = { manage_files = false }
+    docgraph = {
+      manage_files          = false
+      codeql_languages      = ["actions", "rust", "javascript-typescript"]
+      dependabot_ecosystems = ["npm", "cargo", "github-actions"]
+    }
   }
 
   # Default configuration
-  default_config = { manage_files = true }
+  default_config = {
+    manage_files          = true
+    codeql_languages      = ["actions"]
+    ci_checks             = ["verify"]
+    dependabot_ecosystems = ["github-actions"]
+  }
 
   # Merge default config with workspace specific config
   config = merge(local.default_config, lookup(local.workspace_config, terraform.workspace, {}))
@@ -88,12 +97,26 @@ resource "github_repository_ruleset" "main" {
       required_review_thread_resolution = false
     }
 
-    required_status_checks {
-      strict_required_status_checks_policy = true
-      # checkov:skip=CKV_GIT_5:PR-only flow without approvals is intended for solo development
-      # checkov:skip=CKV_GIT_6:Signed commits are not required for personal development
-      required_check {
-        context = "Analyze (actions)" # Match CodeQL job name
+    dynamic "required_status_checks" {
+      for_each = length(concat(local.config.ci_checks, local.config.codeql_languages)) > 0 ? [1] : []
+      content {
+        strict_required_status_checks_policy = true
+
+        # Customize CI checks
+        dynamic "required_check" {
+          for_each = local.config.ci_checks
+          content {
+            context = required_check.value
+          }
+        }
+
+        # Customize CodeQL checks
+        dynamic "required_check" {
+          for_each = local.config.codeql_languages
+          content {
+            context = "Analyze (${required_check.value})"
+          }
+        }
       }
     }
 
@@ -123,7 +146,7 @@ resource "github_repository_file" "ci" {
 name: CI
 on: [push, pull_request]
 jobs:
-  build:
+  verify:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -172,7 +195,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'actions' ]
+        language: ${jsonencode(local.config.codeql_languages)}
 
     steps:
     - name: Checkout repository
@@ -192,6 +215,38 @@ jobs:
         category: "/language:$${{matrix.language}}"
 EOF
   commit_message      = "chore: add CodeQL analysis workflow"
+  overwrite_on_create = true
+
+  lifecycle {
+    ignore_changes = [
+      content,
+      commit_message,
+    ]
+  }
+
+  depends_on = [github_repository.repo]
+}
+
+# Example of initial file: .github/dependabot.yml
+resource "github_repository_file" "dependabot" {
+  count = local.config.manage_files ? 1 : 0
+
+  repository = github_repository.repo.name
+  branch     = "main"
+  file       = ".github/dependabot.yml"
+  content = yamlencode({
+    version = 2
+    updates = [
+      for ecosystem in local.config.dependabot_ecosystems : {
+        package-ecosystem = ecosystem
+        directory         = "/"
+        schedule = {
+          interval = "weekly"
+        }
+      }
+    ]
+  })
+  commit_message      = "chore: add dependabot configuration"
   overwrite_on_create = true
 
   lifecycle {
