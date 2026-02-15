@@ -14,7 +14,7 @@ This repository uses Terraform to automate the creation and management of GitHub
 - **Environment**: Dev Container (see `.devcontainer/Dockerfile`).
 - **Linter**: `tflint`.
 - **Security**: `checkov`.
-- **Commits**: Conventional Commits enforced via `commitlint`.
+
 
 ## Core Logic & Workflows
 
