@@ -12,6 +12,16 @@ locals {
       codeql_languages      = ["actions", "rust", "javascript-typescript"]
       dependabot_ecosystems = ["npm", "cargo", "github-actions"]
     }
+    arxiv-cli = {
+      manage_files          = false
+      codeql_languages      = ["actions", "rust"]
+      dependabot_ecosystems = ["cargo", "github-actions"]
+    }
+    google-patent-cli = {
+      manage_files          = false
+      codeql_languages      = ["actions", "rust"]
+      dependabot_ecosystems = ["cargo", "github-actions"]
+    }
   }
 
   # Default configuration
