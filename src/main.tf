@@ -148,6 +148,13 @@ resource "github_repository_ruleset" "main" {
       }
     }
   }
+
+  # Ensure files are created before rules are enforced to avoid 409 error
+  depends_on = [
+    github_repository_file.ci,
+    github_repository_file.codeql,
+    github_repository_file.dependabot,
+  ]
 }
 
 resource "github_repository_dependabot_security_updates" "repo" {
