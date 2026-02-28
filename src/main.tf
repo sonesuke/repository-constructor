@@ -32,6 +32,11 @@ locals {
       codeql_languages      = ["actions", "rust"]
       dependabot_ecosystems = ["cargo", "github-actions"]
     }
+    cypher-rs = {
+      manage_files          = false
+      codeql_languages      = ["actions", "rust"]
+      dependabot_ecosystems = ["cargo", "github-actions"]
+    }
   }
 
   # Default configuration
