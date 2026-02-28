@@ -27,6 +27,11 @@ locals {
       codeql_languages      = ["actions"]
       dependabot_ecosystems = ["github-actions"]
     }
+    chrome-cdp = {
+      manage_files          = true
+      codeql_languages      = ["actions", "rust"]
+      dependabot_ecosystems = ["cargo", "github-actions"]
+    }
   }
 
   # Default configuration
