@@ -37,6 +37,11 @@ locals {
       codeql_languages      = ["actions", "rust"]
       dependabot_ecosystems = ["cargo", "github-actions"]
     }
+    tiny-a2a-hub = {
+      manage_files          = false
+      codeql_languages      = ["actions", "rust"]
+      dependabot_ecosystems = ["cargo", "github-actions"]
+    }
   }
 
   # Default configuration
