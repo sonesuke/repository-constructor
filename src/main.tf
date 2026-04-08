@@ -133,7 +133,7 @@ resource "github_repository_ruleset" "main" {
     }
 
     dynamic "required_status_checks" {
-      for_each = length(concat(local.config.ci_checks, local.config.codeql_languages)) > 0 ? [1] : []
+      for_each = length(local.config.ci_checks) > 0 ? [1] : []
       content {
         strict_required_status_checks_policy = true
 
@@ -144,22 +144,6 @@ resource "github_repository_ruleset" "main" {
             context = required_check.value
           }
         }
-
-        # Customize CodeQL checks
-        dynamic "required_check" {
-          for_each = local.config.codeql_languages
-          content {
-            context = "Analyze (${required_check.value})"
-          }
-        }
-      }
-    }
-
-    required_code_scanning {
-      required_code_scanning_tool {
-        tool                      = "CodeQL"
-        security_alerts_threshold = "high_or_higher"
-        alerts_threshold          = "errors_and_warnings"
       }
     }
   }
@@ -219,10 +203,6 @@ resource "github_repository_file" "codeql" {
 name: "CodeQL"
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
   schedule:
     - cron: '30 1 * * 0'
 
