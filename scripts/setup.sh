@@ -1,8 +1,9 @@
 #!/bin/bash
 set -e
 
-# Configure git using GitHub noreply email
+# Configure git using GitHub noreply email and credential helper
 if command -v gh >/dev/null 2>&1 && gh auth status &>/dev/null; then
+  gh auth setup-git
   GH_USER=$(gh api user --jq .login)
   GH_ID=$(gh api user --jq .id)
   git config --global user.name "$GH_USER"
