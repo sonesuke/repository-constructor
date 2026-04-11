@@ -1,0 +1,19 @@
+[tasks.build]
+description = "Build dev container image with nix"
+file = "scripts/build.sh"
+
+[tasks.up]
+description = "Start dev container"
+file = "scripts/up.sh"
+
+[tasks.down]
+description = "Stop and remove dev container"
+run = "docker stop repository-constructor && docker rm repository-constructor"
+
+[tasks.attach]
+description = "Attach to dev container"
+run = "docker exec -it -w /workspaces/repository-constructor repository-constructor /bin/zsh"
+
+[tasks.setup]
+description = "Setup environment inside running container (Claude CLI etc.)"
+run = "docker exec -u 1000 repository-constructor bash /workspaces/repository-constructor/scripts/setup.sh"
