@@ -7,6 +7,11 @@ variable "description" {
 locals {
   # Configuration map per workspace
   workspace_config = {
+    craftman = {
+      manage_files          = false
+      codeql_languages      = ["actions", "rust"]
+      dependabot_ecosystems = ["cargo", "github-actions"]
+    }
     docgraph = {
       manage_files          = false
       codeql_languages      = ["actions", "rust", "javascript-typescript"]
