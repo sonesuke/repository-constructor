@@ -57,6 +57,11 @@ locals {
       codeql_languages      = ["actions", "rust"]
       dependabot_ecosystems = ["cargo", "github-actions"]
     }
+    afk = {
+      manage_files          = false
+      codeql_languages      = ["actions", "rust"]
+      dependabot_ecosystems = ["cargo", "github-actions"]
+    }
   }
 
   # Default configuration
