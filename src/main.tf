@@ -72,6 +72,10 @@ locals {
       codeql_languages      = ["actions"]
       dependabot_ecosystems = ["github-actions"]
     }
+    development-semantics = {
+      codeql_languages      = ["actions"]
+      dependabot_ecosystems = ["github-actions"]
+    }
   }
 
   # Default configuration
