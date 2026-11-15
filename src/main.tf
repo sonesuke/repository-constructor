@@ -67,6 +67,11 @@ locals {
       codeql_languages      = ["actions", "rust"]
       dependabot_ecosystems = ["cargo", "github-actions"]
     }
+    nix-configuration = {
+      manage_files          = false
+      codeql_languages      = ["actions"]
+      dependabot_ecosystems = ["github-actions"]
+    }
   }
 
   # Default configuration
