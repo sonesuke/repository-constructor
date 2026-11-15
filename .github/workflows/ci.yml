@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: nixbuild/nix-quick-install-action@v35
+
+      # terraform (unfree) and checkov (insecure ecdsa dependency) are not in
+      # the public binary cache, so cache the Nix store between runs.
+      - uses: nix-community/cache-nix-action@v7
+        with:
+          primary-key: nix-${{ runner.os }}-${{ hashFiles('flake.nix', 'flake.lock') }}
+          restore-prefixes-first-match: nix-${{ runner.os }}-
+
+      - name: Lint
+        run: nix develop -c scripts/lint.sh

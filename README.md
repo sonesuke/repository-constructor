@@ -1,81 +1,46 @@
 # Repository Constructor
 
-A Terraform-based tool for managing GitHub repositories using Dev Container.
+Manage personal GitHub repositories with Terraform. Each Terraform workspace is one GitHub repository.
 
-## Features
-
-- **Dev Container Powered**: Environment managed by `devcontainer` CLI with `tenv` (Terraform version manager), `tflint`, and `checkov`.
-- **Workspace-based Management**: Each workspace in Terraform corresponds to a GitHub repository name.
-- **Branch Protection**: Automatically protects the `main` branch (disallows force pushes and deletions).
-- **Security Features**: Enables Dependabot alerts, Dependabot security updates, CodeQL analysis (Code Scanning), Secret Scanning, and Secret Scanning Push Protection.
-- **Git-managed State**: Terraform state files are tracked by Git for simplicity (intended for personal use).
+What gets created for each repository (repository settings, `main` ruleset, security features, initial workflow files) is defined in [`src/main.tf`](src/main.tf).
 
 ## Prerequisites
 
-- [Docker](https://www.docker.com/)
-- [devcontainer CLI](https://github.com/devcontainers/cli)
-- [GitHub CLI (gh)](https://cli.github.com/) authenticated on your host machine.
+- [Nix](https://nixos.org/) with flakes enabled.
+- `gh` and `git` on your machine (not part of the dev shell), with `gh auth login` done. The GitHub provider picks up the `gh` token.
 
-## Getting Started
+## Dev Environment
 
-1. Authenticate with GitHub CLI on your host:
-   ```bash
-   gh auth login
-   ```
+With [direnv](https://direnv.net/) and [nix-direnv](https://github.com/nix-community/nix-direnv), the dev shell loads automatically in your current shell on `cd` (see [`.envrc`](.envrc)). Run `direnv allow` once. Without direnv, use `nix develop` (always starts bash; use `nix develop -c zsh` for zsh).
 
-2. Start the Dev Container:
-   ```bash
-   devcontainer up --workspace-folder .
-   devcontainer exec --workspace-folder . /bin/zsh
-   ```
+Tools are defined in [`flake.nix`](flake.nix). It permits an insecure `ecdsa` version required by `checkov`; update `permittedInsecurePackages` when nixpkgs bumps it.
 
-3. Initialize Terraform (Inside the container):
+## Adding a Repository
+
+1. Add an entry to `workspace_config` in [`src/main.tf`](src/main.tf). It is merged over `default_config` in the same file.
+2. Create the workspace and apply:
+
    ```bash
    cd src
    terraform init
-   ```
-
-## Creating a New Repository
-
-1. Create a new Terraform workspace (this will be the repository name):
-   ```bash
-   cd src
-   terraform workspace new my-awesome-repo
-   ```
-
-2. Plan and Apply:
-   ```bash
-   terraform plan
+   terraform workspace new <repository-name>
    terraform apply
    ```
 
-## Linting and Security
+3. Commit `src/main.tf` and `src/terraform.tfstate.d/<repository-name>/`.
 
-- **Formatting**: `terraform fmt` (run inside `src/` to format HCL files)
-- **TFLint**: `tflint`
-- **Checkov**: `checkov -d .`
+Notes:
 
-## Important Notes
+- `manage_files = false` leaves workflow files to the repository itself. Use it for existing repositories or ones that maintain their own workflows.
+- The ruleset requires the `ci_checks` status checks. The repository needs a job with that name, or pull requests cannot be merged.
 
-- **State Management**: State files are NOT ignored by `.gitignore`. This repository tracks them in Git.
-- **Locking**: No state locking is implemented as this is intended for single-user scenarios.
+## State
 
-## Configuration (Map Strategy)
+State is committed to Git on purpose (`src/terraform.tfstate.d/`). There is no locking; this setup is for a single user. Applying with a newer Terraform upgrades the version recorded in state.
 
-This project uses a **Map Strategy** in `src/main.tf` to manage per-workspace configurations. Instead of using external `.tfvars` files, settings are defined in the `locals` block.
+## Conventions
 
-### How to Configure
-Modify `src/main.tf` to add your repository-specific settings:
-
-```hcl
-locals {
-  workspace_config = {
-    # Add your repository here
-    docgraph = { manage_files = false }
-  }
-}
-```
-
-- **`manage_files` (bool)**:
-    - `true` (Default): For **new repositories**. Terraform manages CI/CodeQL files.
-    - `false`: For **existing repositories** (like `docgraph`). Terraform imports the repository but leaves files untouched to avoid conflicts with Rulesets.
+- Before committing, run [`scripts/fmt.sh`](scripts/fmt.sh) and [`scripts/lint.sh`](scripts/lint.sh) inside the dev shell.
+- New resources must work per workspace (`terraform.workspace` is the repository name).
+- Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/).
+- Documentation is written in English.
