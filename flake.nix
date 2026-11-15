@@ -27,6 +27,17 @@
                   # Required by checkov; ecdsa has an unfixed timing side-channel (CVE-2024-23342).
                   permittedInsecurePackages = [ "python3.14-ecdsa-0.19.2" ];
                 };
+                overlays = [
+                  (_: prev: {
+                    pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+                      (_: pyPrev: {
+                        # checkov's closure is not in the binary cache, so this builds from
+                        # source; its tests fail on Linux (unidiff parse errors).
+                        bc-detect-secrets = pyPrev.bc-detect-secrets.overridePythonAttrs { doCheck = false; };
+                      })
+                    ];
+                  })
+                ];
               }
             )
           );
